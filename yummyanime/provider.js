@@ -11,7 +11,8 @@ Provider.prototype.getSettings = function() {
 
 Provider.prototype.search = function(opts) {
   var self = this;
-  var body = "do=search&subaction=search&story=" + encodeURIComponent(opts.query);
+  var query = String(opts.query || "");
+  var body = "do=search&subaction=search&story=" + encodeURIComponent(query);
 
   return fetch(self.base + "/search/", {
     method: "POST",
@@ -50,10 +51,6 @@ Provider.prototype.search = function(opts) {
       });
     });
 
-    if (!results.length) {
-      throw new Error("No anime found on YummyAnime.");
-    }
-
     return results;
   });
 };
@@ -72,7 +69,7 @@ Provider.prototype.findEpisodes = function(id) {
   }).then(function(html) {
     var match = html.match(/data-params="mod=kodik-player[^"]*id=(\d+)/);
     if (!match) {
-      throw new Error("No Kodik player found for this anime.");
+      throw new Error("No Kodik player found.");
     }
 
     var animeId = match[1];
@@ -88,7 +85,7 @@ Provider.prototype.findEpisodes = function(id) {
       return res.json();
     }).then(function(data) {
       if (!data.success || !data.data) {
-        throw new Error("Failed to get Kodik iframe URL.");
+        throw new Error("Failed to get iframe URL.");
       }
 
       return [{
