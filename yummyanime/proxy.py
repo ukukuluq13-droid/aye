@@ -5,7 +5,7 @@ import json
 import re
 import subprocess
 import urllib.parse
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 PROXY_URL = "http://e59af03de5924efe5221__cr.nl;anon.1:7777bba731f2950a@74.81.81.81:823"
 BASE = "https://yummyanime.tv"
@@ -146,6 +146,6 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server = HTTPServer(("127.0.0.1", 8765), Handler)
+    server = ThreadingHTTPServer(("127.0.0.1", 8765), Handler)
     print("YummyAnime proxy listening on http://127.0.0.1:8765")
     server.serve_forever()
