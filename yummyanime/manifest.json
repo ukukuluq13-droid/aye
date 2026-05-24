@@ -1,0 +1,13 @@
+{
+  "id": "yummyanime",
+  "name": "YummyAnime",
+  "description": "YummyAnime.tv - русскоязычный online streaming provider для аниме (Kodik, Alloha)",
+  "manifestURI": "https://raw.githubusercontent.com/ukukuluq13-droid/aye/main/yummyanime/manifest.json",
+  "version": "1.0.0",
+  "author": "ukukuluq13-droid",
+  "type": "onlinestream-provider",
+  "language": "javascript",
+  "lang": "ru",
+  "icon": "https://yummyanime.tv/favicon.ico",
+  "payloadURI": "https://raw.githubusercontent.com/ukukuluq13-droid/aye/main/yummyanime/provider.js"
+}
