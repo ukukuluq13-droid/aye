@@ -145,9 +145,14 @@ class Provider {
 
   async findEpisodeServer(episode: EpisodeDetails, server: string): Promise<EpisodeServer> {
     const parts = episode.id.split("$")
-    const playerType = parts[0]
+    const idPlayerType = parts[0]
 
-    if (playerType === "alloha") {
+    // Respect the server parameter when it explicitly selects a backend
+    let selectedType = idPlayerType
+    if (server === "Alloha") selectedType = "alloha"
+    else if (server === "Kodik") selectedType = "kodik"
+
+    if (selectedType === "alloha") {
       const iframeUrl = parts[1]
       return {
         server: "Alloha",
@@ -166,14 +171,14 @@ class Provider {
       }
     }
 
-    if (playerType === "kodik") {
+    if (selectedType === "kodik") {
       const epId = parts[1]
       const epHash = parts[2]
       const animeId = parts[3]
       return await this._extractKodikVideo(epId, epHash, animeId)
     }
 
-    throw new Error("Unknown player type: " + playerType)
+    throw new Error("Unknown player type: " + selectedType)
   }
 
   // ─── Private helpers ───

@@ -137,9 +137,14 @@ class Provider {
 
   async findEpisodeServer(episode, server) {
     var parts = episode.id.split("$");
-    var playerType = parts[0];
+    var idPlayerType = parts[0];
 
-    if (playerType === "alloha") {
+    // Respect the server parameter when it explicitly selects a backend
+    var selectedType = idPlayerType;
+    if (server === "Alloha") selectedType = "alloha";
+    else if (server === "Kodik") selectedType = "kodik";
+
+    if (selectedType === "alloha") {
       var iframeUrl = parts[1];
       return {
         server: "Alloha",
@@ -158,14 +163,14 @@ class Provider {
       };
     }
 
-    if (playerType === "kodik") {
+    if (selectedType === "kodik") {
       var epId = parts[1];
       var epHash = parts[2];
       var animeId = parts[3];
       return await this._extractKodikVideo(epId, epHash, animeId);
     }
 
-    throw new Error("Unknown player type: " + playerType);
+    throw new Error("Unknown player type: " + selectedType);
   }
 
   // ─── Internal helpers ───
