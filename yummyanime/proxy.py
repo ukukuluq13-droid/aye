@@ -66,7 +66,7 @@ def parse_search(html):
     items = html.split('class="movie-item"')
     for item in items[1:]:
         href_match = re.search(r'href="([^"]+)"', item)
-        title_match = re.search(r'class="movie-item__title">([^<]+)<', item)
+        title_match = re.search(r'class="movie-item__title"[^>]*>([^<]+)<', item)
         if href_match and title_match:
             href = href_match.group(1)
             title = title_match.group(1).strip()
@@ -78,11 +78,21 @@ def parse_search(html):
     return results
 
 
-def parse_anime_page(html):
+def parse_anime_page(html, url=""):
+    # Try legacy data-params marker
     match = re.search(r'data-params="mod=kodik-player[^"]*id=(\d+)"', html)
-    if not match:
-        return None
-    return match.group(1)
+    if match:
+        return match.group(1)
+    # Try data-id marker (common on YummyAnime)
+    match = re.search(r'data-id="(\d+)"', html)
+    if match:
+        return match.group(1)
+    # Fallback: extract numeric ID from URL path like /70-naruto-s3.html
+    if url:
+        m = re.search(r'/(\d+)-[^/]+\.html', url)
+        if m:
+            return m.group(1)
+    return None
 
 
 def get_iframe_url(anime_id):
@@ -116,13 +126,13 @@ class Handler(BaseHTTPRequestHandler):
             anime_id = query.get("id", [""])[0]
             url = anime_id if anime_id.startswith("http") else BASE + "/" + anime_id
             html = curl_get(url)
-            kodik_id = parse_anime_page(html)
+            kodik_id = parse_anime_page(html, url)
             if not kodik_id:
-                self._json_response({"error": "No Kodik player found"}, 404)
+                self._json_response([], 404)
                 return
             iframe = get_iframe_url(kodik_id)
             if not iframe:
-                self._json_response({"error": "Failed to get iframe URL"}, 404)
+                self._json_response([], 404)
                 return
             self._json_response([{
                 "id": "kodik$" + iframe + "$" + anime_id,
