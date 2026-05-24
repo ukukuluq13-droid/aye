@@ -124,10 +124,10 @@ class Provider {
       }
     }
 
-    // Filter non-integer episodes
+    // Filter non-integer episodes (ES5-compatible)
     var filtered = [];
     for (var m = 0; m < episodes.length; m++) {
-      if (Number.isInteger(episodes[m].number)) filtered.push(episodes[m]);
+      if (episodes[m].number % 1 === 0) filtered.push(episodes[m]);
     }
 
     if (!filtered.length) throw new Error("No valid episodes found.");
