@@ -66,7 +66,7 @@ def parse_search(html):
     items = html.split('class="movie-item"')
     for item in items[1:]:
         href_match = re.search(r'href="([^"]+)"', item)
-        title_match = re.search(r'class="movie-item__title">([^<]+)<', item)
+        title_match = re.search(r'class="movie-item__title"[^>]*>([^<]+)<', item)
         if href_match and title_match:
             href = href_match.group(1)
             title = title_match.group(1).strip()
