@@ -1,4 +1,4 @@
-Provider = function() {
+var Provider = function() {
   this.base = "https://yummyanime.tv";
 };
 
